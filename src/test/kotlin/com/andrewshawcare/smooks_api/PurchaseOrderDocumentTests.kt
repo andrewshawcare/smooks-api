@@ -9,8 +9,8 @@ import java.util.*
 class PurchaseOrderDocumentTests {
     @Test
     fun purchaseOrderDocumentFromEdi() {
-        val ediDocumentMapper = EdiDocumentMapper("smooks_resource_list.xml")
-        val actualPurchaseOrderDocument = ediDocumentMapper.bind(
+        val ediDocumentService = EdiDocumentService("smooks_resource_list.xml")
+        val actualPurchaseOrderDocument = ediDocumentService.bind(
             inputStream = File("src/test/resources/purchase_order.edi").inputStream(),
             clazz = PurchaseOrderDocument::class.java
         )

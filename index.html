@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <title>EDI Mapper</title>
+    <link rel="shortcut icon" href="#"/>
+    <style>
+        body {
+            font-family: sans-serif;
+        }
+        article {
+            display: flex;
+        }
+        #edi, #json {
+            width: 50%;
+        }
+    </style>
+</head>
+<body>
+<h1>EDI Mapper</h1>
+<article>
+    <textarea id="edi"></textarea>
+    <pre id="json"></pre>
+</article>
+<script type="module">
+  document.getElementById("edi").addEventListener("input", async (event) => {
+    const formData = new FormData();
+    formData.append(
+      "purchaseOrderDocument",
+      new Blob([event.target.value]),
+      "purchaseOrderDocument"
+    );
+    const purchaseOrderDocument = await fetch(
+      "http://localhost:8080/purchase-order-document",
+      { method: "POST", body: formData }
+    );
+    const purchaseOrderDocumentJson = await purchaseOrderDocument.json();
+    document.getElementById("json").textContent = JSON.stringify(purchaseOrderDocumentJson, null, 2)
+  })
+</script>
+</body>
+</html>

@@ -5,7 +5,7 @@ import org.milyn.payload.JavaResult
 import java.io.InputStream
 import javax.xml.transform.stream.StreamSource
 
-class EdiDocumentMapper(configurationResourceURI: String) {
+class EdiDocumentService(configurationResourceURI: String) {
     private val smooks: Smooks
 
     init {

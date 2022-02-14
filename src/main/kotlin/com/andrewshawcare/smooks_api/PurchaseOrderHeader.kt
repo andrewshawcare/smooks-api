@@ -9,5 +9,5 @@ data class PurchaseOrderHeader(
     var netAmount: BigDecimal = BigDecimal.ZERO,
     var totalAmount: BigDecimal = BigDecimal.ZERO,
     var tax: BigDecimal = BigDecimal.ZERO,
-    var date: Date = Date()
+    var date: Date = Date(0)
 )
