@@ -18,13 +18,15 @@ class PurchaseOrderDocumentController {
                     clazz = PurchaseOrderDocument::class.java
                 )
         } catch (smooksException: SmooksException) {
-            var cause = smooksException.cause!!
+            var cause: Throwable = smooksException.cause!!
             var message = ""
+
             while (cause is DataDecodeException) {
-                message += "${cause.message}\n"
+                message += "${cause.localizedMessage}\n"
                 cause = cause.cause!!
             }
-            throw Exception("${message}${cause.message}")
+
+            throw Exception(message + cause.localizedMessage)
         }
     }
 }
