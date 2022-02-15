@@ -13,6 +13,11 @@
         }
         #edi, #json {
             width: 50%;
+            margin: 0;
+            padding: 1rem;
+        }
+        #json {
+            white-space: pre-wrap;
         }
     </style>
 </head>
@@ -23,20 +28,37 @@
     <pre id="json"></pre>
 </article>
 <script type="module">
-  document.getElementById("edi").addEventListener("input", async (event) => {
+  const buildFileFormData = ({ fileName = "", fileContent = "" } = {}) => {
     const formData = new FormData();
-    formData.append(
-      "purchaseOrderDocument",
-      new Blob([event.target.value]),
-      "purchaseOrderDocument"
-    );
+    formData.append(fileName, new Blob([fileContent]), fileName);
+    return formData;
+  }
+  const renderPurchaseOrderDocumentJson = async ({
+    purchaseOrderDocumentEdiFileContent = ""
+  } = {}) => {
     const purchaseOrderDocument = await fetch(
       "http://localhost:8080/purchase-order-document",
-      { method: "POST", body: formData }
+      {
+        method: "POST",
+        body: buildFileFormData({
+          fileName: "purchaseOrderDocument",
+          fileContent: purchaseOrderDocumentEdiFileContent
+        })
+      }
     );
     const purchaseOrderDocumentJson = await purchaseOrderDocument.json();
-    document.getElementById("json").textContent = JSON.stringify(purchaseOrderDocumentJson, null, 2)
-  })
+    document.getElementById("json").textContent = JSON.stringify(
+      purchaseOrderDocument.ok ? purchaseOrderDocumentJson : purchaseOrderDocumentJson.message,
+      null,
+      2
+    )
+  }
+  document.getElementById("edi").addEventListener("input", (event) => {
+    renderPurchaseOrderDocumentJson({
+      purchaseOrderDocumentEdiFileContent: event.target.value
+    })
+  });
+  renderPurchaseOrderDocumentJson();
 </script>
 </body>
 </html>
