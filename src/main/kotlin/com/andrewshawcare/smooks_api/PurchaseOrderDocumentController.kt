@@ -1,6 +1,7 @@
 package com.andrewshawcare.smooks_api
 
 import org.milyn.SmooksException
+import org.milyn.javabean.DataDecodeException
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
@@ -17,7 +18,13 @@ class PurchaseOrderDocumentController {
                     clazz = PurchaseOrderDocument::class.java
                 )
         } catch (smooksException: SmooksException) {
-            throw smooksException.cause!!
+            var cause = smooksException.cause!!
+            var message = ""
+            while (cause is DataDecodeException) {
+                message += "${cause.message}\n"
+                cause = cause.cause!!
+            }
+            throw Exception("${message}${cause.message}")
         }
     }
 }
