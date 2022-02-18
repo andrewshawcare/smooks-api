@@ -6,17 +6,16 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.multipart.MultipartFile
+import com.andrewshawcare.smooks_api.model.PurchaseOrderDocument
 
 @RestController
 class PurchaseOrderDocumentController {
     @PostMapping("/purchase-order-document")
     fun bindPurchaseOrderDocument(@RequestParam("purchaseOrderDocument") purchaseOrderDocumentMultipartFile: MultipartFile): PurchaseOrderDocument {
         try {
-            return EdiDocumentService("smooks_resource_list.xml")
-                .bind(
-                    inputStream = purchaseOrderDocumentMultipartFile.inputStream,
-                    clazz = PurchaseOrderDocument::class.java
-                )
+            return com.andrewshawcare.smooks_api.model.PurchaseOrderDocumentFactory
+                .getInstance()
+                .fromEDI(purchaseOrderDocumentMultipartFile.inputStream)
         } catch (smooksException: SmooksException) {
             var cause: Throwable = smooksException.cause!!
             var message = ""
