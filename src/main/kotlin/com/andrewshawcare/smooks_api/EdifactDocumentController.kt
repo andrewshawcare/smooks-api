@@ -1,7 +1,9 @@
 package com.andrewshawcare.smooks_api
 
+import org.milyn.SmooksException
 import org.milyn.edi.unedifact.d01b.D01BInterchangeFactory
 import org.milyn.edi.unedifact.d96a.D96AInterchangeFactory
+import org.milyn.javabean.DataDecodeException
 import org.milyn.smooks.edi.unedifact.model.UNEdifactInterchange
 import org.milyn.smooks.edi.unedifact.model.UNEdifactInterchangeFactory
 import org.springframework.web.bind.annotation.PostMapping
@@ -22,7 +24,19 @@ class EdifactDocumentController {
         @RequestParam("edifactMessageMultipartFile")
         edifactMessageMultipartFile: MultipartFile
     ): UNEdifactInterchange {
-        return edifactReleaseNumberToUNEdifactInterchangeFactory[edifactReleaseNumber]
-            ?.fromUNEdifact(edifactMessageMultipartFile.inputStream) ?: throw Exception()
+        try {
+            return edifactReleaseNumberToUNEdifactInterchangeFactory[edifactReleaseNumber]
+                ?.fromUNEdifact(edifactMessageMultipartFile.inputStream) ?: throw Exception()
+        } catch (smooksException: SmooksException) {
+            var cause: Throwable = smooksException.cause!!
+            var message = ""
+
+            while (cause is DataDecodeException) {
+                message += "${cause.localizedMessage}\n"
+                cause = cause.cause!!
+            }
+
+            throw Exception(message + cause.localizedMessage)
+        }
     }
 }

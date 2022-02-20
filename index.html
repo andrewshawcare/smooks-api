@@ -11,6 +11,10 @@
         article {
             display: flex;
         }
+        label {
+            display: block;
+            margin: 1rem 0;
+        }
         #edi, #json {
             width: 50%;
             margin: 0;
@@ -45,7 +49,7 @@
     </select>
 </label>
 <article>
-    <textarea rows="16" id="edi"></textarea>
+    <textarea rows="48" id="edi"></textarea>
     <json-viewer id="json"></json-viewer>
 </article>
 <script src="https://cdn.jsdelivr.net/npm/@alenaksu/json-viewer@0.3.4/dist/index.min.js"></script>
@@ -435,13 +439,17 @@ UNT+27+ME000001'`
       "edifactMessageMultipartFile"
     )
 
+    const jsonElement = document.getElementById("json");
+
+    jsonElement.data = "Loading..."
+
     const response = await fetch(
       "http://localhost:8080/edifact-document",
       { method: "POST", body: formData }
     );
 
     const messageJson = await response.json();
-    document.getElementById("json").data =
+    jsonElement.data =
       response.ok
         ? messageJson
         : messageJson.message
