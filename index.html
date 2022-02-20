@@ -25,39 +25,40 @@
 <h1>EDI Mapper</h1>
 <article>
     <textarea id="edi"></textarea>
-    <pre id="json"></pre>
+    <json-viewer id="json"></json-viewer>
 </article>
+<script src="https://cdn.jsdelivr.net/npm/@alenaksu/json-viewer@0.3.4/dist/index.min.js"></script>
 <script type="module">
   const buildFileFormData = ({ fileName = "", fileContent = "" } = {}) => {
     const formData = new FormData();
     formData.append(fileName, new Blob([fileContent]), fileName);
     return formData;
   }
-  const renderPurchaseOrderDocumentJson = async ({
-    purchaseOrderDocumentEdiFileContent = ""
+  const renderDocumentJson = async ({
+    ediFileContent = ""
   } = {}) => {
-    const purchaseOrderDocument = await fetch(
-      "http://localhost:8080/purchase-order-document",
+    const response = await fetch(
+      "http://localhost:8080/invoice-document",
       {
         method: "POST",
         body: buildFileFormData({
-          fileName: "purchaseOrderDocument",
-          fileContent: purchaseOrderDocumentEdiFileContent
+          fileName: "invoiceDocument",
+          fileContent: ediFileContent
         })
       }
     );
-    const purchaseOrderDocumentJson = await purchaseOrderDocument.json();
-    document.getElementById("json").textContent =
-      purchaseOrderDocument.ok
-        ? JSON.stringify(purchaseOrderDocumentJson, null, 2)
-        : purchaseOrderDocumentJson.message
+    const documentJson = await response.json();
+    document.getElementById("json").data =
+      response.ok
+        ? documentJson
+        : documentJson.message
   }
   document.getElementById("edi").addEventListener("input", (event) => {
-    renderPurchaseOrderDocumentJson({
-      purchaseOrderDocumentEdiFileContent: event.target.value
+    renderDocumentJson({
+      ediFileContent: event.target.value
     })
   });
-  renderPurchaseOrderDocumentJson();
+  renderDocumentJson();
 </script>
 </body>
 </html>

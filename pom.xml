@@ -33,6 +33,18 @@
         </dependency>
 
         <dependency>
+            <groupId>org.milyn.edi.unedifact</groupId>
+            <artifactId>d93a-binding</artifactId>
+            <version>1.7.1.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.milyn.edi.unedifact</groupId>
+            <artifactId>d93a-mapping</artifactId>
+            <version>1.7.1.0</version>
+        </dependency>
+
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
             <version>${spring.boot.version}</version>
