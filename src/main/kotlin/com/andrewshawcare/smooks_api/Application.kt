@@ -13,7 +13,7 @@ open class Application {
         return object : WebMvcConfigurer {
             override fun addCorsMappings(corsRegistry: CorsRegistry) {
                 corsRegistry.addMapping("/**")
-                    .allowedOrigins("http://localhost:8000")
+                    .allowedOrigins("http://localhost:8081")
             }
         }
     }
