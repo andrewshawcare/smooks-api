@@ -11,6 +11,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
+        <org.milyn.edi.unedifact.version>1.7.1.0</org.milyn.edi.unedifact.version>
     </properties>
 
     <dependencies>
@@ -32,16 +33,35 @@
             </exclusions>
         </dependency>
 
+        <!-- Inventory report message (https://service.unece.org/trade/untdid/d00a/trmd/invrpt_c.htm) -->
+        <!-- Purchase order message (https://service.unece.org/trade/untdid/d11a/trmd/orders_c.htm) -->
+        <!-- Purchase order response message (https://service.unece.org/trade/untdid/d01a/trmd/ordrsp_c.htm) -->
+        <!-- Receiving advice message (https://service.unece.org/trade/untdid/d00a/trmd/recadv_c.htm) -->
+        <!-- Sales data report message (https://service.unece.org/trade/untdid/d01a/trmd/slsrpt_c.htm) -->
+        <!-- Purchase order change request message (https://unece.org/fileadmin/DAM/trade/untdid/d14b/trmd/ordchg_c.htm) -->
+        <!-- Invoice message (https://service.unece.org/trade/untdid/d21b/trmd/invoic_c.htm) -->
+        <!-- Despatch advice message (https://service.unece.org/trade/untdid/d13a/trmd/desadv_c.htm) -->
         <dependency>
             <groupId>org.milyn.edi.unedifact</groupId>
-            <artifactId>d93a-binding</artifactId>
-            <version>1.7.1.0</version>
+            <artifactId>d96a-mapping</artifactId>
+            <version>${org.milyn.edi.unedifact.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.milyn.edi.unedifact</groupId>
+            <artifactId>d96a-binding</artifactId>
+            <version>${org.milyn.edi.unedifact.version}</version>
         </dependency>
 
+        <!-- Instruction to despatch message (https://service.unece.org/trade/untdid/d00a/trmd/insdes_c.htm) -->
         <dependency>
             <groupId>org.milyn.edi.unedifact</groupId>
-            <artifactId>d93a-mapping</artifactId>
-            <version>1.7.1.0</version>
+            <artifactId>d01b-mapping</artifactId>
+            <version>${org.milyn.edi.unedifact.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.milyn.edi.unedifact</groupId>
+            <artifactId>d01b-binding</artifactId>
+            <version>${org.milyn.edi.unedifact.version}</version>
         </dependency>
 
         <dependency>

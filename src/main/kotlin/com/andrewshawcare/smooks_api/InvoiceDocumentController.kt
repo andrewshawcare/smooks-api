@@ -1,6 +1,6 @@
 package com.andrewshawcare.smooks_api
 
-import org.milyn.edi.unedifact.d93a.D93AInterchangeFactory
+import org.milyn.edi.unedifact.d96a.D96AInterchangeFactory
 import org.milyn.smooks.edi.unedifact.model.UNEdifactInterchange
 import org.milyn.smooks.edi.unedifact.model.r41.UNEdifactInterchange41
 import org.springframework.web.bind.annotation.PostMapping
@@ -15,7 +15,7 @@ class InvoiceDocumentController {
         @RequestParam("invoiceDocument")
         invoiceDocumentMultipartFile: MultipartFile
     ): UNEdifactInterchange {
-        val d93aInterchangeFactory = D93AInterchangeFactory.getInstance()
-        return d93aInterchangeFactory.fromUNEdifact(invoiceDocumentMultipartFile.inputStream) as UNEdifactInterchange41
+        val d96aInterchangeFactory = D96AInterchangeFactory.getInstance()
+        return d96aInterchangeFactory.fromUNEdifact(invoiceDocumentMultipartFile.inputStream) as UNEdifactInterchange41
     }
 }
