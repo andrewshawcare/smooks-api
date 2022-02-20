@@ -7,14 +7,17 @@ import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.multipart.MultipartFile
 import com.andrewshawcare.smooks_api.model.PurchaseOrderDocument
+import com.andrewshawcare.smooks_api.model.PurchaseOrderDocumentFactory
 
 @RestController
 class PurchaseOrderDocumentController {
     @PostMapping("/purchase-order-document")
-    fun bindPurchaseOrderDocument(@RequestParam("purchaseOrderDocument") purchaseOrderDocumentMultipartFile: MultipartFile): PurchaseOrderDocument {
+    fun bindPurchaseOrderDocument(
+        @RequestParam("purchaseOrderDocument")
+        purchaseOrderDocumentMultipartFile: MultipartFile
+    ): PurchaseOrderDocument {
         try {
-            return com.andrewshawcare.smooks_api.model.PurchaseOrderDocumentFactory
-                .getInstance()
+            return PurchaseOrderDocumentFactory.getInstance()
                 .fromEDI(purchaseOrderDocumentMultipartFile.inputStream)
         } catch (smooksException: SmooksException) {
             var cause: Throwable = smooksException.cause!!
