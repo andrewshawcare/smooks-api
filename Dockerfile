@@ -1,8 +1,10 @@
 FROM maven:3-openjdk-17-slim as build
 WORKDIR /opt/app
 
+ENV JAVAAGENT_GROUP_ID=io.opentelemetry.javaagent
 ENV JAVAAGENT_ARTIFACT_ID=opentelemetry-javaagent
-ENV JAVAAGENT_ARTIFACT=io.opentelemetry.javaagent:${JAVAAGENT_ARTIFACT_ID}:1.11.0
+ENV JAVAAGENT_ARTIFACT_VERSION=1.11.0
+ENV JAVAAGENT_ARTIFACT=${JAVAAGENT_GROUP_ID}:${JAVAAGENT_ARTIFACT_ID}:${JAVAAGENT_ARTIFACT_VERSION}
 RUN mvn dependency:get -Dartifact=${JAVAAGENT_ARTIFACT} \
     && mvn dependency:copy -Dartifact=${JAVAAGENT_ARTIFACT} -DoutputDirectory=. -Dmdep.stripVersion=true \
     && mv ${JAVAAGENT_ARTIFACT_ID}.jar javaagent.jar
