@@ -10,9 +10,12 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.multipart.MultipartFile
+import java.util.logging.Level
+import java.util.logging.Logger
 
 @RestController
 class EdifactDocumentController {
+    private val logger: Logger = Logger.getLogger(this.javaClass.name)
     private val edifactReleaseNumberToUNEdifactInterchangeFactory = mapOf<String, UNEdifactInterchangeFactory>(
         "96A" to D96AInterchangeFactory.getInstance(),
         "01B" to D01BInterchangeFactory.getInstance()
@@ -24,6 +27,14 @@ class EdifactDocumentController {
         @RequestParam("edifactMessageMultipartFile")
         edifactMessageMultipartFile: MultipartFile
     ): UNEdifactInterchange {
+        logger.log(
+            Level.INFO,
+            """
+                event=MessageReceived
+                standard=EDIFACT
+                releaseNumber=${edifactReleaseNumber}
+            """.trimIndent().replace(oldChar = '\n', newChar = ' ')
+        )
         try {
             return edifactReleaseNumberToUNEdifactInterchangeFactory[edifactReleaseNumber]
                 ?.fromUNEdifact(edifactMessageMultipartFile.inputStream) ?: throw Exception()

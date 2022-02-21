@@ -19,3 +19,32 @@ datasources:
       httpMethod: GET
       nodeGraph:
         enabled: true
+      tracesToLogs:
+        datasourceUid: loki
+        tags: [ 'app', 'job' ]
+        filterByTraceID: true
+        filterBySpanID: true
+        spanStartTimeShift: '-1s'
+        spanEndTimeShift: '1s'
+        lokiSearch: true
+
+  - name: Loki
+    type: loki
+    uid: loki
+    access: proxy
+    url: ${GF_DATASOURCES_LOKI_URL}
+    basicAuth: false
+    isDefault: false
+    version: 1
+    editable: false
+    apiVersion: 1
+    jsonData:
+      derivedFields:
+        - name: TraceID
+          datasourceUid: tempo
+          matcherRegex: 'traceID=(\w+)'
+          url: $${__value.raw}
+        - name: SpanID
+          datasourceUid: tempo
+          matcherRegex: 'spanID=(\w+)'
+          url: $${__value.raw}
