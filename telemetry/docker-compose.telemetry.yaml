@@ -1,0 +1,26 @@
+version: '3'
+services:
+  tempo:
+    image: grafana/tempo
+    command: -config.file=/etc/tempo-configuration.yaml
+    volumes:
+      - ./telemetry/tempo-configuration.yaml:/etc/tempo-configuration.yaml:ro
+
+  opentelemetry-collector:
+    image: otel/opentelemetry-collector-contrib
+    command: --config=/etc/opentelemetry-collector-configuration.yaml
+    volumes:
+      - ./telemetry/opentelemetry-collector-configuration.yaml:/etc/opentelemetry-collector-configuration.yaml:ro
+
+  grafana:
+    image: grafana/grafana-oss
+    ports:
+      - '3000:3000'
+    environment:
+      GF_DATASOURCES_TEMPO_URL: http://tempo:3200
+      GF_AUTH_ANONYMOUS_ENABLED: 'true'
+      GF_AUTH_ANONYMOUS_ORG_NAME: Main Org.
+      GF_AUTH_ANONYMOUS_ORG_ROLE: Admin
+      GF_FEATURE_TOGGLES_ENABLE: tempoSearch tempoBackendSearch
+    volumes:
+      - ./telemetry/datasources.yaml:/etc/grafana/provisioning/datasources/datasources.yaml:ro
