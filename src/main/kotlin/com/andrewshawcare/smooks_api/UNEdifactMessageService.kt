@@ -37,6 +37,7 @@ class UNEdifactMessageService {
             unEdifactInterchange = unEdifactInterchangeFactory.fromUNEdifact(unEdifactMessageInputStream) as UNEdifactInterchange41
         } catch (smooksException: SmooksException) {
             var cause: Throwable = smooksException.cause!!
+            var errorType = smooksException.javaClass.name
             var message = ""
 
             while (cause is DataDecodeException) {
@@ -55,6 +56,7 @@ class UNEdifactMessageService {
                     "versionNumber" to unEdifactVersionNumberAndReleaseNumber.versionNumber,
                     "releaseNumber" to unEdifactVersionNumberAndReleaseNumber.releaseNumber,
                     "messageId" to unEdifactMessageId,
+                    "errorType" to errorType,
                     "errorMessages" to errorMessages
                 ))
             )
