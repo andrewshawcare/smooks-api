@@ -14,11 +14,14 @@ class EdifactDocumentController {
     fun createEdifactDocument(
         @RequestParam("unEdifactVersionNumberAndReleaseNumber")
         unEdifactVersionNumberAndReleaseNumber: String,
+        @RequestParam("unEdifactMessageId")
+        unEdifactMessageId: String,
         @RequestParam("unEdifactMessageMultipartFile")
         unEdifactMessageMultipartFile: MultipartFile
     ): UNEdifactInterchange {
         return unEdifactMessageService.fromEdi(
             unEdifactVersionNumberAndReleaseNumber = UNEdifactVersionNumberAndReleaseNumber.valueOf(unEdifactVersionNumberAndReleaseNumber),
+            unEdifactMessageId = unEdifactMessageId,
             unEdifactMessageInputStream = unEdifactMessageMultipartFile.inputStream
         )
     }

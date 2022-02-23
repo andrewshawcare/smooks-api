@@ -29,7 +29,7 @@
 <h1>EDIFACT Message Mapper</h1>
 <label>
     Message type:
-    <select id="edifactMessageType">
+    <select id="unEdifactMessageId">
         <option value="INVRPT">Inventory report</option>
         <option value="ORDERS">Purchase order</option>
         <option value="ORDRSP">Purchase order response</option>
@@ -432,12 +432,17 @@ UNT+27+ME000001'`
     formData.append(
       "unEdifactVersionNumberAndReleaseNumber",
       unEdifactVersionNumberAndReleaseNumber
+    );
+    const unEdifactMessageId = document.getElementById("unEdifactMessageId").value;
+    formData.append(
+      "unEdifactMessageId",
+      unEdifactMessageId
     )
     formData.append(
       "unEdifactMessageMultipartFile",
       new Blob([edifactMessage]),
       "edifactMessageMultipartFile"
-    )
+    );
 
     const jsonElement = document.getElementById("json");
 
@@ -455,7 +460,7 @@ UNT+27+ME000001'`
         : messageJson.message
   }
 
-  document.getElementById("edifactMessageType").addEventListener("change", (event) => {
+  document.getElementById("unEdifactMessageId").addEventListener("change", (event) => {
     const ediElement = document.getElementById("edi");
     const { unEdifactVersionNumberAndReleaseNumber, message } = edifactMessageTypeToEdifactMessageExample[event.target.value];
     const edifactReleaseNumberElement = document.getElementById("unEdifactVersionNumberAndReleaseNumber");
@@ -476,7 +481,7 @@ UNT+27+ME000001'`
     })
   });
 
-  document.getElementById("edifactMessageType").dispatchEvent(new Event("change"));
+  document.getElementById("unEdifactMessageId").dispatchEvent(new Event("change"));
 </script>
 </body>
 </html>

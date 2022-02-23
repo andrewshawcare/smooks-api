@@ -13,6 +13,7 @@ class UNEdifactMessageService {
 
     fun fromEdi(
         unEdifactVersionNumberAndReleaseNumber: UNEdifactVersionNumberAndReleaseNumber,
+        unEdifactMessageId: String,
         unEdifactMessageInputStream: InputStream
     ): UNEdifactInterchange {
         logger.log(
@@ -23,7 +24,8 @@ class UNEdifactMessageService {
                 "targetFormat" to "Java",
                 "standard" to "EDIFACT",
                 "versionNumber" to unEdifactVersionNumberAndReleaseNumber.versionNumber,
-                "releaseNumber" to unEdifactVersionNumberAndReleaseNumber.releaseNumber
+                "releaseNumber" to unEdifactVersionNumberAndReleaseNumber.releaseNumber,
+                "messageId" to unEdifactMessageId
             ))
         )
 
@@ -47,11 +49,12 @@ class UNEdifactMessageService {
             logger.log(
                 Level.SEVERE,
                 mapToLogfmtMessage(mapOf(
-                    "event" to "MessageMapppingFailed",
+                    "event" to "MessageMappingFailed",
                     "format" to "EDI",
                     "standard" to "EDIFACT",
                     "versionNumber" to unEdifactVersionNumberAndReleaseNumber.versionNumber,
                     "releaseNumber" to unEdifactVersionNumberAndReleaseNumber.releaseNumber,
+                    "messageId" to unEdifactMessageId,
                     "errorMessages" to errorMessages
                 ))
             )
