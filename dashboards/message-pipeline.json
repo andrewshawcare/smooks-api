@@ -22,7 +22,7 @@
   "fiscalYearStartMonth": 0,
   "graphTooltip": 2,
   "id": 1,
-  "iteration": 1645635438790,
+  "iteration": 1645647480529,
   "links": [],
   "liveNow": false,
   "panels": [
@@ -394,8 +394,8 @@
             "type": "loki",
             "uid": "loki"
           },
-          "expr": "sum(count_over_time({job=\"app\"} | logfmt | errorMessages!=\"\" [${interval}])) by (errorMessages)",
-          "legendFormat": "{{errorMessages}}",
+          "expr": "sum(count_over_time({job=\"app\"} | logfmt | errorType!=\"\" [${interval}])) by (errorType)",
+          "legendFormat": "{{errorType}}",
           "refId": "A"
         }
       ],
@@ -520,8 +520,8 @@
     ]
   },
   "time": {
-    "from": "2022-02-23T16:55:37.605Z",
-    "to": "2022-02-23T16:57:22.715Z"
+    "from": "now-30m",
+    "to": "now"
   },
   "timepicker": {},
   "timezone": "",
