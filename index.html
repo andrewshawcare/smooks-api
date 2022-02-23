@@ -43,9 +43,9 @@
 </label>
 <label>
     Release number:
-    <select id="edifactReleaseNumber">
-        <option value="96A">96A</option>
-        <option value="01B">01B</option>
+    <select id="unEdifactVersionNumberAndReleaseNumber">
+        <option value="D96A">D96A</option>
+        <option value="D01B">D01B</option>
     </select>
 </label>
 <article>
@@ -56,7 +56,7 @@
 <script type="module">
   const edifactMessageTypeToEdifactMessageExample = {
     'INVRPT': {
-      releaseNumber: '96A',
+      unEdifactVersionNumberAndReleaseNumber: 'D96A',
       message: `UNH+EW76752397+INVRPT:D:96A:UN:EAN004'
 BGM+35+00000018+9'
 DTM+137:20110317:102'
@@ -90,7 +90,7 @@ LOC+14+3020279002007::9+304'
 UNT+2111+EW76752397'`
     },
     'ORDERS': {
-      releaseNumber: '96A',
+      unEdifactVersionNumberAndReleaseNumber: 'D96A',
       message: `UNA:+.? '
 UNB+UNOC:3+8716106053841:14+8712199999999:14+200625:1645+3++++0++0'
 UNH+1+ORDERS:D:96A:UN'
@@ -141,7 +141,7 @@ UNT+45+1'
 UNZ+1+3'`
     },
     'ORDRSP': {
-      releaseNumber: '96A',
+      unEdifactVersionNumberAndReleaseNumber: 'D96A',
       message: `UNB+UNOC:3+ OWN_ID:OWN_QUALIFIER+PARTNER_ID:PARTNER_QUALIFIER +130711:1300+00000000000001++++++1'
 UNH+1+ORDRSP:D:96A:UN'
 BGM+220::9+4500000001+9'
@@ -172,7 +172,7 @@ UNT+27+1'
 UNZ+1+00000000000001'`
     },
     'ORDCHG': {
-      releaseNumber: '96A',
+      unEdifactVersionNumberAndReleaseNumber: 'D96A',
       message: `UNA:+.? '
 UNB+UNOA:3+1234567890123:ZZ+3210987654321:ZZ+090225:0356+00000001972890'
 UNH+0001+ORDCHG:D:96A:UN:EAN008'
@@ -199,7 +199,7 @@ UNT+21+0001'
 UNZ+1+00000001972890'`
     },
     'INVOIC': {
-      releaseNumber: '96A',
+      unEdifactVersionNumberAndReleaseNumber: 'D96A',
       message: `UNB+UNOA:3+TENOR-LUXOR+O093100000875450157HBTIS+171104:0208+17110402080998'
 UNH+1+INVOIC:D:96A:UN:A14051'
 BGM+380+9179149+9'
@@ -262,7 +262,7 @@ UNT+52+1'
 UNZ+1+17110402080998'`
     },
     'DESADV': {
-      releaseNumber: '96A',
+      unEdifactVersionNumberAndReleaseNumber: 'D96A',
       message: `UNB+UNOC:1+SUPPLIERUNBCODE:OD+09420000556242944800MEFA:OD+140811:0953+123568'
 UNH+245+DESADV:D:96A:UN'
 BGM+351+9000047'
@@ -329,7 +329,7 @@ UNT+62+245'
 UNZ+1+123568'`
     },
     'INSDES': {
-      releaseNumber: '01B',
+      unEdifactVersionNumberAndReleaseNumber: 'D01B',
       message: `UNH+ME000001+INSDES:D:01B:UN:EAN003'
 BGM+350+3223+9'
 DTM+137:20020107:102'
@@ -375,7 +375,7 @@ CNT+1:588'
 UNT+43+ME000001'`
     },
     'RECADV': {
-      releaseNumber: '01B',
+      unEdifactVersionNumberAndReleaseNumber: 'D01B',
       message: `UNH+1+RECADV:D:01B:UN:EAN004'
 BGM+632+5003369678+9'
 DTM+137:20181206:102'
@@ -393,7 +393,7 @@ QTY+21:36.000:PCE'
 UNT+15+1'`
     },
     'SLSRPT': {
-      releaseNumber: '01B',
+      unEdifactVersionNumberAndReleaseNumber: 'D01B',
       message: `UNH+ME000001+SLSRPT:D:01B:UN:EAN007'
 BGM+73E::9+SDR1568+9'
 DTM+137:20021105:102'
@@ -425,23 +425,23 @@ UNT+27+ME000001'`
   }
 
   const renderMessageJson = async ({
-    edifactReleaseNumber = "",
+    unEdifactVersionNumberAndReleaseNumber = "",
     edifactMessage = ""
   } = {}) => {
     const formData = new FormData();
     formData.append(
-      "edifactReleaseNumber",
-      edifactReleaseNumber
+      "unEdifactVersionNumberAndReleaseNumber",
+      unEdifactVersionNumberAndReleaseNumber
     )
     formData.append(
-      "edifactMessageMultipartFile",
+      "unEdifactMessageMultipartFile",
       new Blob([edifactMessage]),
       "edifactMessageMultipartFile"
     )
 
     const jsonElement = document.getElementById("json");
 
-    jsonElement.data = "Loading..."
+    jsonElement.data = "Loading message..."
 
     const response = await fetch(
       "http://localhost:8080/edifact-document",
@@ -457,21 +457,21 @@ UNT+27+ME000001'`
 
   document.getElementById("edifactMessageType").addEventListener("change", (event) => {
     const ediElement = document.getElementById("edi");
-    const { releaseNumber, message } = edifactMessageTypeToEdifactMessageExample[event.target.value];
-    const edifactReleaseNumberElement = document.getElementById("edifactReleaseNumber");
-    edifactReleaseNumberElement.value = releaseNumber;
+    const { unEdifactVersionNumberAndReleaseNumber, message } = edifactMessageTypeToEdifactMessageExample[event.target.value];
+    const edifactReleaseNumberElement = document.getElementById("unEdifactVersionNumberAndReleaseNumber");
+    edifactReleaseNumberElement.value = unEdifactVersionNumberAndReleaseNumber;
     ediElement.value = message;
     ediElement.dispatchEvent(new Event("input"));
   });
 
-  document.getElementById("edifactReleaseNumber").addEventListener("change", (event) => {
+  document.getElementById("unEdifactVersionNumberAndReleaseNumber").addEventListener("change", (event) => {
     const ediElement = document.getElementById("edi");
     ediElement.dispatchEvent(new Event("input"));
   });
 
   document.getElementById("edi").addEventListener("input", (event) => {
     renderMessageJson({
-      edifactReleaseNumber: document.getElementById("edifactReleaseNumber").value,
+      unEdifactVersionNumberAndReleaseNumber: document.getElementById("unEdifactVersionNumberAndReleaseNumber").value,
       edifactMessage: event.target.value
     })
   });
