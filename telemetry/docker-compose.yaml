@@ -32,4 +32,4 @@ services:
     volumes:
       - ./telemetry/datasources.yaml:/etc/grafana/provisioning/datasources/datasources.yaml:ro
       - ./telemetry/dashboards.yaml:/etc/grafana/provisioning/dashboards/dashboards.yaml:ro
-      - ./dashboards:/var/lib/grafana/dashboards
+      - ./telemetry-dashboards:/var/lib/grafana/dashboards

@@ -33,9 +33,11 @@ class UNEdifactMessageService {
 
         val unEdifactInterchange: UNEdifactInterchange41
 
+        val startTimeMillis = System.currentTimeMillis()
         try {
             unEdifactInterchange = unEdifactInterchangeFactory.fromUNEdifact(unEdifactMessageInputStream) as UNEdifactInterchange41
         } catch (smooksException: SmooksException) {
+            val endTimeMillis = System.currentTimeMillis()
             var cause: Throwable = smooksException.cause!!
             var errorType = smooksException.cause!!.javaClass.simpleName
             var message = ""
@@ -57,12 +59,15 @@ class UNEdifactMessageService {
                     "releaseNumber" to unEdifactVersionNumberAndReleaseNumber.releaseNumber,
                     "messageId" to unEdifactMessageId,
                     "errorType" to errorType,
-                    "errorMessages" to errorMessages
+                    "errorMessages" to errorMessages,
+                    "duration" to (endTimeMillis - startTimeMillis).toString()
                 ))
             )
 
             throw Exception(errorMessages)
         }
+
+        val endTimeMillis = System.currentTimeMillis()
 
         logger.log(
             Level.INFO,
@@ -74,7 +79,8 @@ class UNEdifactMessageService {
                 "releaseNumber" to unEdifactVersionNumberAndReleaseNumber.releaseNumber,
                 "senderId" to (unEdifactInterchange.interchangeHeader?.sender?.id ?: ""),
                 "recipientId" to (unEdifactInterchange.interchangeHeader?.recipient?.id ?: ""),
-                "messageId" to (unEdifactInterchange.messages?.first()?.messageHeader?.messageIdentifier?.id ?: "")
+                "messageId" to (unEdifactInterchange.messages?.first()?.messageHeader?.messageIdentifier?.id ?: ""),
+                "duration" to (endTimeMillis - startTimeMillis).toString()
             ))
         )
 
