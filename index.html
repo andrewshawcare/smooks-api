@@ -469,7 +469,7 @@ UNT+27+ME000001'`
     ediElement.dispatchEvent(new Event("input"));
   });
 
-  document.getElementById("unEdifactVersionNumberAndReleaseNumber").addEventListener("change", (event) => {
+  document.getElementById("unEdifactVersionNumberAndReleaseNumber").addEventListener("change", () => {
     const ediElement = document.getElementById("edi");
     ediElement.dispatchEvent(new Event("input"));
   });

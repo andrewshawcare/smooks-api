@@ -39,7 +39,7 @@ class UNEdifactMessageService {
         } catch (smooksException: SmooksException) {
             val endTimeMillis = System.currentTimeMillis()
             var cause: Throwable = smooksException.cause!!
-            var errorType = smooksException.cause!!.javaClass.simpleName
+            val errorType = smooksException.cause!!.javaClass.simpleName
             var message = ""
 
             while (cause is DataDecodeException) {
