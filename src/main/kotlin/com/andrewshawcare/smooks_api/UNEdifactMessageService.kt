@@ -9,7 +9,8 @@ import java.util.logging.Level
 import java.util.logging.Logger
 
 class UNEdifactMessageService {
-    private val logger: Logger = Logger.getLogger(this::class.java.name)
+    private val logger = Logger.getLogger(this::class.java.name)
+    private val unEdifactInterchangeFactoryStrategy = UNEdifactInterchangeFactoryStrategy()
 
     fun fromEdi(
         unEdifactVersionNumberAndReleaseNumber: UNEdifactVersionNumberAndReleaseNumber,
@@ -29,18 +30,18 @@ class UNEdifactMessageService {
             ))
         )
 
-        val unEdifactInterchangeFactory = UNEdifactInterchangeFactoryStrategy().getInstance(unEdifactVersionNumberAndReleaseNumber)
-
+        val unEdifactInterchangeFactory = unEdifactInterchangeFactoryStrategy.getInstance(unEdifactVersionNumberAndReleaseNumber)
         val unEdifactInterchange: UNEdifactInterchange41
-
         val startTimeMillis = System.currentTimeMillis()
+
         try {
             unEdifactInterchange = unEdifactInterchangeFactory.fromUNEdifact(unEdifactMessageInputStream) as UNEdifactInterchange41
         } catch (smooksException: SmooksException) {
             val endTimeMillis = System.currentTimeMillis()
-            var cause: Throwable = smooksException.cause!!
             val errorType = smooksException.cause!!.javaClass.simpleName
+
             var message = ""
+            var cause: Throwable = smooksException.cause!!
 
             while (cause is DataDecodeException) {
                 message += "${cause.localizedMessage}\n"
