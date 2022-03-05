@@ -1,11 +1,11 @@
 import http from 'k6/http';
 import { sleep } from 'k6';
 
-export default function () {
-    const edifactMessageTypeToEdifactMessageExample = {
-        'INVRPT': {
-            unEdifactVersionNumberAndReleaseNumber: 'D96A',
-            message: `UNH+EW76752397+INVRPT:D:96A:UN:EAN004'
+const edifactMessageExamples = [
+    {
+        id: 'INVRPT',
+        versionNumberAndReleaseNumber: 'D96A',
+        content: `UNH+EW76752397+INVRPT:D:96A:UN:EAN004'
 BGM+35+00000018+9'
 DTM+137:20110317:102'
 DTM+366:20110317:102'
@@ -36,10 +36,71 @@ PIA+1+000000000310509504:BP'
 QTY+145:14'
 LOC+14+3020279002007::9+304'
 UNT+2111+EW76752397'`
-        },
-        'ORDERS': {
-            unEdifactVersionNumberAndReleaseNumber: 'D96A',
-            message: `UNA:+.? '
+    },
+    {
+        id: 'ORDCHG',
+        versionNumberAndReleaseNumber: 'D96A',
+        content: `UNA:+.? '
+UNB+UNOA:3+1234567890123:ZZ+3210987654321:ZZ+090225:0356+00000001972890'
+UNH+0001+ORDCHG:D:96A:UN:EAN008'
+BGM+230+P011032735+1'
+DTM+137:20090225:102'
+DTM+2:20090226:102'
+RFF+ON:P011032735'
+RFF+BO:GPO962316'
+NAD+BY+9377778749983::9'
+NAD+SU+9377778616193::9'
+NAD+ST+9330833000115::9'
+CUX+2:AUD:9'
+PAT+7+6:::30 DAYS NET'
+LIN+1+2+6937042201277:EN'
+PIA+1+1073667:IN'
+PIA+1+A1234:SA'
+LIN+2+2+9311183050067:EN'
+PIA+1+1812320:IN'
+PIA+1+A1235:SA'
+UNS+S'
+MOA+86:548.13'
+CNT+2:2'
+UNT+21+0001'
+UNZ+1+00000001972890'`
+    },
+    {
+        id: 'ORDRSP',
+        versionNumberAndReleaseNumber: 'D96A',
+        content: `UNB+UNOC:3+ OWN_ID:OWN_QUALIFIER+PARTNER_ID:PARTNER_QUALIFIER +130711:1300+00000000000001++++++1'
+UNH+1+ORDRSP:D:96A:UN'
+BGM+220::9+4500000001+9'
+DTM+4:20130718:102'
+DTM+2:20130813:102'
+DTM+64:201308130600:203'
+DTM+63:201308131200:203'
+FTX+SUR+3++This is a header text.+EN'
+RFF+ON:4200074278'
+DTM+171:20130718:102'
+RFF+AAG:4100012345'
+DTM+171:20130622:102'
+NAD+BY+4000000000001::9++cbs+Im Breitspiel 19+Heidelberg++69126+DE'
+NAD+DP+4000000000001::9++cbs+Im Breitspiel 19+Heidelberg++69126+DE'
+NAD+SU+4300000000002::9'
+NAD+SE+4300000000003::9'
+LIN+10++1111111111:EN::9'
+PIA+1+2222222222:BP::92'
+PIA+1+3333333333:SA::91'
+IMD+F++:::Product 123'
+QTY+21:56.00:PCE'
+DTM+2:20130813:102'
+DTM+64:201308130600:203'
+DTM+63:201308131200:203'
+FTX+AAA+3++This is a position text.+EN'
+UNS+S'
+UNT+27+1'
+UNZ+1+00000000000001'`
+    },
+    {
+        id: 'ORDERS',
+        versionNumberAndReleaseNumber: 'D96A',
+        content: `UNA:+.? '
 UNB+UNOC:3+8716106053841:14+8712199999999:14+200625:1645+3++++0++0'
 UNH+1+ORDERS:D:96A:UN'
 BGM+220+2738662+9'
@@ -87,68 +148,11 @@ PRI+AAA:36.82'
 UNS+S'
 UNT+45+1'
 UNZ+1+3'`
-        },
-        'ORDRSP': {
-            unEdifactVersionNumberAndReleaseNumber: 'D96A',
-            message: `UNB+UNOC:3+ OWN_ID:OWN_QUALIFIER+PARTNER_ID:PARTNER_QUALIFIER +130711:1300+00000000000001++++++1'
-UNH+1+ORDRSP:D:96A:UN'
-BGM+220::9+4500000001+9'
-DTM+4:20130718:102'
-DTM+2:20130813:102'
-DTM+64:201308130600:203'
-DTM+63:201308131200:203'
-FTX+SUR+3++This is a header text.+EN'
-RFF+ON:4200074278'
-DTM+171:20130718:102'
-RFF+AAG:4100012345'
-DTM+171:20130622:102'
-NAD+BY+4000000000001::9++cbs+Im Breitspiel 19+Heidelberg++69126+DE'
-NAD+DP+4000000000001::9++cbs+Im Breitspiel 19+Heidelberg++69126+DE'
-NAD+SU+4300000000002::9'
-NAD+SE+4300000000003::9'
-LIN+10++1111111111:EN::9'
-PIA+1+2222222222:BP::92'
-PIA+1+3333333333:SA::91'
-IMD+F++:::Product 123'
-QTY+21:56.00:PCE'
-DTM+2:20130813:102'
-DTM+64:201308130600:203'
-DTM+63:201308131200:203'
-FTX+AAA+3++This is a position text.+EN'
-UNS+S'
-UNT+27+1'
-UNZ+1+00000000000001'`
-        },
-        'ORDCHG': {
-            unEdifactVersionNumberAndReleaseNumber: 'D96A',
-            message: `UNA:+.? '
-UNB+UNOA:3+1234567890123:ZZ+3210987654321:ZZ+090225:0356+00000001972890'
-UNH+0001+ORDCHG:D:96A:UN:EAN008'
-BGM+230+P011032735+1'
-DTM+137:20090225:102'
-DTM+2:20090226:102'
-RFF+ON:P011032735'
-RFF+BO:GPO962316'
-NAD+BY+9377778749983::9'
-NAD+SU+9377778616193::9'
-NAD+ST+9330833000115::9'
-CUX+2:AUD:9'
-PAT+7+6:::30 DAYS NET'
-LIN+1+2+6937042201277:EN'
-PIA+1+1073667:IN'
-PIA+1+A1234:SA'
-LIN+2+2+9311183050067:EN'
-PIA+1+1812320:IN'
-PIA+1+A1235:SA'
-UNS+S'
-MOA+86:548.13'
-CNT+2:2'
-UNT+21+0001'
-UNZ+1+00000001972890'`
-        },
-        'INVOIC': {
-            unEdifactVersionNumberAndReleaseNumber: 'D96A',
-            message: `UNB+UNOA:3+TENOR-LUXOR+O093100000875450157HBTIS+171104:0208+17110402080998'
+    },
+    {
+        id: 'INVOIC',
+        versionNumberAndReleaseNumber: 'D96A',
+        content: `UNB+UNOA:3+TENOR-LUXOR+O093100000875450157HBTIS+171104:0208+17110402080998'
 UNH+1+INVOIC:D:96A:UN:A14051'
 BGM+380+9179149+9'
 DTM+137:20171103:102'
@@ -208,10 +212,11 @@ MOA+124:1736.1'
 MOA+125:8680.5'
 UNT+52+1'
 UNZ+1+17110402080998'`
-        },
-        'DESADV': {
-            unEdifactVersionNumberAndReleaseNumber: 'D96A',
-            message: `UNB+UNOC:1+SUPPLIERUNBCODE:OD+09420000556242944800MEFA:OD+140811:0953+123568'
+    },
+    {
+        id: 'DESADV',
+        versionNumberAndReleaseNumber: 'D96A',
+        content: `UNB+UNOC:1+SUPPLIERUNBCODE:OD+09420000556242944800MEFA:OD+140811:0953+123568'
 UNH+245+DESADV:D:96A:UN'
 BGM+351+9000047'
 DTM+137:201408111415:203'
@@ -275,10 +280,11 @@ QTY+12:6990:PCE'
 RFF+ON:2160B'
 UNT+62+245'
 UNZ+1+123568'`
-        },
-        'INSDES': {
-            unEdifactVersionNumberAndReleaseNumber: 'D01B',
-            message: `UNH+ME000001+INSDES:D:01B:UN:EAN003'
+    },
+    {
+        id: 'INSDES',
+        versionNumberAndReleaseNumber: 'D01B',
+        content: `UNH+ME000001+INSDES:D:01B:UN:EAN003'
 BGM+350+3223+9'
 DTM+137:20020107:102'
 RFF+HN:HAN8755'
@@ -321,10 +327,11 @@ UNS+S'
 CNT+2:8'
 CNT+1:588'
 UNT+43+ME000001'`
-        },
-        'RECADV': {
-            unEdifactVersionNumberAndReleaseNumber: 'D01B',
-            message: `UNH+1+RECADV:D:01B:UN:EAN004'
+    },
+    {
+        id: 'RECADV',
+        versionNumberAndReleaseNumber: 'D01B',
+        content: `UNH+1+RECADV:D:01B:UN:EAN004'
 BGM+632+5003369678+9'
 DTM+137:20181206:102'
 DTM+50:20190123:102'
@@ -339,10 +346,11 @@ PIA+1+000000000002084538:IN'
 QTY+194:36.000:PCE'
 QTY+21:36.000:PCE'
 UNT+15+1'`
-        },
-        'SLSRPT': {
-            unEdifactVersionNumberAndReleaseNumber: 'D01B',
-            message: `UNH+ME000001+SLSRPT:D:01B:UN:EAN007'
+    },
+    {
+        id: 'SLSRPT',
+        versionNumberAndReleaseNumber: 'D01B',
+        content: `UNH+ME000001+SLSRPT:D:01B:UN:EAN007'
 BGM+73E::9+SDR1568+9'
 DTM+137:20021105:102'
 DTM+356:2002100120021031:718'
@@ -369,16 +377,19 @@ PRI+AAA:1500:CA:RTP’\tThe net calculation retail price for the item is 1500 EU
 QTY+153:115'
 UNS+S'
 UNT+27+ME000001'`
-        }
-    };
-    const edifactMessageId = 'SLSRPT';
+    }
+];
+
+export default function () {
+    const edifactMessageExampleIndex = Math.floor(Math.random() * edifactMessageExamples.length);
+    const edifactMessageExample = edifactMessageExamples[edifactMessageExampleIndex];
     http.post(
         'http://localhost:8080/edifact-document',
         {
-            unEdifactMessageId: edifactMessageId,
-            unEdifactVersionNumberAndReleaseNumber: edifactMessageTypeToEdifactMessageExample[edifactMessageId].unEdifactVersionNumberAndReleaseNumber,
+            unEdifactMessageId: edifactMessageExample.id,
+            unEdifactVersionNumberAndReleaseNumber: edifactMessageExample.versionNumberAndReleaseNumber,
             unEdifactMessageMultipartFile: http.file(
-                edifactMessageTypeToEdifactMessageExample[edifactMessageId].message,
+                edifactMessageExample.content,
                 'unEdifactMessageMultipartFile'
             )
         }
