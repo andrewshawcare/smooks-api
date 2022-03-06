@@ -4,13 +4,17 @@ import org.milyn.SmooksException
 import org.milyn.javabean.DataDecodeException
 import org.milyn.smooks.edi.unedifact.model.UNEdifactInterchange
 import org.milyn.smooks.edi.unedifact.model.r41.UNEdifactInterchange41
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.kafka.core.KafkaTemplate
 import java.io.InputStream
 import java.util.logging.Level
 import java.util.logging.Logger
 
-class UNEdifactMessageService {
+class UNEdifactMessageService @Autowired constructor(
+    private val unEdifactInterchangeFactoryStrategy: UNEdifactInterchangeFactoryStrategy,
+    private val kafkaTemplate: KafkaTemplate<String, String>
+) {
     private val logger = Logger.getLogger(this::class.java.name)
-    private val unEdifactInterchangeFactoryStrategy = UNEdifactInterchangeFactoryStrategy()
 
     fun fromEdi(
         unEdifactVersionNumberAndReleaseNumber: UNEdifactVersionNumberAndReleaseNumber,
@@ -69,21 +73,21 @@ class UNEdifactMessageService {
         }
 
         val endTimeMillis = System.currentTimeMillis()
+        val messageMappingSucceededRecord = mapToLogfmtMessage(mapOf(
+            "event" to "MessageMappingSucceeded",
+            "format" to "EDI",
+            "standard" to "EDIFACT",
+            "versionNumber" to unEdifactVersionNumberAndReleaseNumber.versionNumber,
+            "releaseNumber" to unEdifactVersionNumberAndReleaseNumber.releaseNumber,
+            "senderId" to (unEdifactInterchange.interchangeHeader?.sender?.id ?: ""),
+            "recipientId" to (unEdifactInterchange.interchangeHeader?.recipient?.id ?: ""),
+            "messageId" to (unEdifactInterchange.messages?.first()?.messageHeader?.messageIdentifier?.id ?: ""),
+            "duration" to (endTimeMillis - startTimeMillis).toString()
+        ))
 
-        logger.log(
-            Level.INFO,
-            mapToLogfmtMessage(mapOf(
-                "event" to "MessageMappingSucceeded",
-                "format" to "EDI",
-                "standard" to "EDIFACT",
-                "versionNumber" to unEdifactVersionNumberAndReleaseNumber.versionNumber,
-                "releaseNumber" to unEdifactVersionNumberAndReleaseNumber.releaseNumber,
-                "senderId" to (unEdifactInterchange.interchangeHeader?.sender?.id ?: ""),
-                "recipientId" to (unEdifactInterchange.interchangeHeader?.recipient?.id ?: ""),
-                "messageId" to (unEdifactInterchange.messages?.first()?.messageHeader?.messageIdentifier?.id ?: ""),
-                "duration" to (endTimeMillis - startTimeMillis).toString()
-            ))
-        )
+        logger.log(Level.INFO, messageMappingSucceededRecord)
+
+        kafkaTemplate.send("events", messageMappingSucceededRecord)
 
         return unEdifactInterchange
     }

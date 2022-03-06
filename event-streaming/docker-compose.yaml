@@ -1,0 +1,10 @@
+version: '3'
+services:
+  kafka:
+    build: ./event-streaming
+  kafdrop:
+    image: obsidiandynamics/kafdrop
+    environment:
+      KAFKA_BROKERCONNECT: kafka:9092
+    ports:
+      - "9000:9000"
