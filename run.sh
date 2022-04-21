@@ -6,6 +6,7 @@ down() {
     -f consumer/docker-compose.yaml \
     -f event-streaming/docker-compose.yaml \
     -f telemetry/docker-compose.yaml \
+    -f performance/docker-compose.yaml \
     down -v
 }
 
@@ -15,6 +16,7 @@ build() {
     -f consumer/docker-compose.yaml \
     -f event-streaming/docker-compose.yaml \
     -f telemetry/docker-compose.yaml \
+    -f performance/docker-compose.yaml \
     build
 }
 
@@ -24,6 +26,7 @@ up() {
      -f consumer/docker-compose.yaml \
      -f event-streaming/docker-compose.yaml \
      -f telemetry/docker-compose.yaml \
+     -f performance/docker-compose.yaml \
      up
 }
 

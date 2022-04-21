@@ -2,6 +2,9 @@ version: '3'
 services:
   k6:
     image: grafana/k6
+    environment:
+      K6_VUS: 10
+      K6_DURATION: 5m
     volumes:
       - ./performance-tests:/performance-tests:ro
     command: run /performance-tests/index.js

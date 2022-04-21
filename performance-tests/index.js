@@ -380,11 +380,15 @@ UNT+27+ME000001'`
     }
 ];
 
+export function setup() {
+    sleep(10);
+}
+
 export default function () {
     const edifactMessageExampleIndex = Math.floor(Math.random() * edifactMessageExamples.length);
     const edifactMessageExample = edifactMessageExamples[edifactMessageExampleIndex];
     http.post(
-        'http://localhost:8080/edifact-document',
+        'http://app:8080/edifact-document',
         {
             unEdifactMessageId: edifactMessageExample.id,
             unEdifactVersionNumberAndReleaseNumber: edifactMessageExample.versionNumberAndReleaseNumber,
