@@ -1,7 +1,7 @@
 version: '3'
 services:
   k6:
-    image: grafana/k6
+    build: ./performance
     environment:
       K6_VUS: 10
       K6_DURATION: 15m

@@ -1,5 +1,6 @@
 package com.andrewshawcare.smooks_api
 
+import org.json.JSONObject
 import org.milyn.SmooksException
 import org.milyn.javabean.DataDecodeException
 import org.milyn.smooks.edi.unedifact.model.UNEdifactInterchange
@@ -23,7 +24,7 @@ class UNEdifactMessageService @Autowired constructor(
     ): UNEdifactInterchange {
         logger.log(
             Level.INFO,
-            mapToLogfmtMessage(mapOf(
+            JSONObject(mapOf(
                 "event" to "MessageMappingStarted",
                 "sourceFormat" to "EDI",
                 "targetFormat" to "Java",
@@ -31,7 +32,7 @@ class UNEdifactMessageService @Autowired constructor(
                 "versionNumber" to unEdifactVersionNumberAndReleaseNumber.versionNumber,
                 "releaseNumber" to unEdifactVersionNumberAndReleaseNumber.releaseNumber,
                 "messageId" to unEdifactMessageId
-            ))
+            )).toString()
         )
 
         val unEdifactInterchangeFactory = unEdifactInterchangeFactoryStrategy.getInstance(unEdifactVersionNumberAndReleaseNumber)
@@ -56,7 +57,7 @@ class UNEdifactMessageService @Autowired constructor(
 
             logger.log(
                 Level.SEVERE,
-                mapToLogfmtMessage(mapOf(
+                JSONObject(mapOf(
                     "event" to "MessageMappingFailed",
                     "format" to "EDI",
                     "standard" to "EDIFACT",
@@ -66,14 +67,14 @@ class UNEdifactMessageService @Autowired constructor(
                     "errorType" to errorType,
                     "errorMessages" to errorMessages,
                     "duration" to (endTimeMillis - startTimeMillis).toString()
-                ))
+                )).toString()
             )
 
             throw Exception(errorMessages)
         }
 
         val endTimeMillis = System.currentTimeMillis()
-        val messageMappingSucceededRecord = mapToLogfmtMessage(mapOf(
+        val messageMappingSucceededRecord = JSONObject(mapOf(
             "event" to "MessageMappingSucceeded",
             "format" to "EDI",
             "standard" to "EDIFACT",
@@ -83,7 +84,7 @@ class UNEdifactMessageService @Autowired constructor(
             "recipientId" to (unEdifactInterchange.interchangeHeader?.recipient?.id ?: ""),
             "messageId" to (unEdifactInterchange.messages?.first()?.messageHeader?.messageIdentifier?.id ?: ""),
             "duration" to (endTimeMillis - startTimeMillis).toString()
-        ))
+        )).toString()
 
         logger.log(Level.INFO, messageMappingSucceededRecord)
 

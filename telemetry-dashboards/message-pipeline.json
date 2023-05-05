@@ -3,7 +3,10 @@
     "list": [
       {
         "builtIn": 1,
-        "datasource": "-- Grafana --",
+        "datasource": {
+          "type": "datasource",
+          "uid": "grafana"
+        },
         "enable": true,
         "hide": true,
         "iconColor": "rgba(0, 211, 255, 1)",
@@ -17,9 +20,12 @@
         "type": "dashboard"
       },
       {
-        "datasource": "Loki",
+        "datasource": {
+          "type": "loki",
+          "uid": "loki"
+        },
         "enable": true,
-        "expr": "{job=\"app\"} | logfmt | event=\"MessageMappingFailed\"",
+        "expr": "{job=\"app\"} | event=\"MessageMappingFailed\"",
         "iconColor": "red",
         "name": "MessageMappingFailed",
         "tagKeys": "MessageMappingFailed",
@@ -34,7 +40,6 @@
   "fiscalYearStartMonth": 0,
   "graphTooltip": 2,
   "id": 1,
-  "iteration": 1646411009510,
   "links": [],
   "liveNow": false,
   "panels": [
@@ -50,6 +55,8 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
@@ -108,7 +115,8 @@
         "legend": {
           "calcs": [],
           "displayMode": "list",
-          "placement": "bottom"
+          "placement": "bottom",
+          "showLegend": true
         },
         "tooltip": {
           "mode": "multi",
@@ -122,7 +130,7 @@
             "type": "loki",
             "uid": "loki"
           },
-          "expr": "sum(\n  count_over_time(\n    {job=\"app\"}\n      |~ `messageId=\"${messageId}\"`\n      |= \"event=\"\n      | logfmt\n    [${interval}]\n  )\n) by (event)",
+          "expr": "sum(\n  count_over_time(\n    {job=\"app\"}\n    [${interval}]\n  )\n) by (event)",
           "legendFormat": "{{event}}",
           "queryType": "range",
           "refId": "A"
@@ -143,6 +151,8 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
@@ -220,7 +230,8 @@
         "legend": {
           "calcs": [],
           "displayMode": "list",
-          "placement": "bottom"
+          "placement": "bottom",
+          "showLegend": true
         },
         "tooltip": {
           "mode": "single",
@@ -233,9 +244,11 @@
             "type": "loki",
             "uid": "loki"
           },
-          "expr": "sum(\n  count_over_time(\n    {job=\"app\"}\n      |~ `messageId=\"${messageId}\"`\n      |= `event=\"MessageMappingFailed\"`\n    [${interval}]\n  )\n)\n/\nsum(\n  count_over_time(\n    {job=\"app\"}\n      |~ `messageId=\"${messageId}\"`\n      |~ `event=\"MessageMapping(Succeeded|Failed)\"`\n    [${interval}]\n  )\n)",
+          "editorMode": "code",
+          "expr": "sum(\n  count_over_time(\n    {job=\"app\", event=\"MessageMappingFailed\"}\n    [${interval}]\n  )\n)\n/\nsum(\n  count_over_time(\n    {job=\"app\", event=~\"MessageMapping(Succeeded|Failed)\"}\n    [${interval}]\n  )\n)",
           "hide": false,
           "legendFormat": "MessageMappingFailed",
+          "queryType": "range",
           "refId": "A"
         }
       ],
@@ -253,6 +266,8 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
@@ -309,7 +324,8 @@
         "legend": {
           "calcs": [],
           "displayMode": "list",
-          "placement": "bottom"
+          "placement": "bottom",
+          "showLegend": true
         },
         "tooltip": {
           "mode": "single",
@@ -322,7 +338,7 @@
             "type": "loki",
             "uid": "loki"
           },
-          "expr": "avg_over_time({job=\"app\"} |= \"event=\" |= \"duration=\" | logfmt | unwrap duration [1m]) by (event)",
+          "expr": "avg_over_time({job=\"app\"} | unwrap duration [1m]) by (event)",
           "legendFormat": "{{event}}",
           "refId": "A"
         }
@@ -341,6 +357,8 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
@@ -396,7 +414,8 @@
         "legend": {
           "calcs": [],
           "displayMode": "list",
-          "placement": "bottom"
+          "placement": "bottom",
+          "showLegend": true
         },
         "tooltip": {
           "mode": "multi",
@@ -409,8 +428,10 @@
             "type": "loki",
             "uid": "loki"
           },
-          "expr": "sum(\n  count_over_time(\n    {job=\"app\"}\n      |~ `messageId=\"${messageId}\"`\n      |= \"errorType=\"\n      | logfmt\n    [${interval}]\n  )\n) by (errorType)",
+          "editorMode": "code",
+          "expr": "sum(\n  count_over_time(\n    {job=\"app\", errorType!=\"\"}\n    [${interval}]\n  )\n) by (errorType)",
           "legendFormat": "{{errorType}}",
+          "queryType": "range",
           "refId": "A"
         }
       ],
@@ -419,7 +440,7 @@
     }
   ],
   "refresh": "5s",
-  "schemaVersion": 35,
+  "schemaVersion": 38,
   "style": "dark",
   "tags": [],
   "templating": {
@@ -577,6 +598,6 @@
   "timezone": "",
   "title": "Message pipeline",
   "uid": "t3AAMbf7k",
-  "version": 3,
+  "version": 1,
   "weekStart": ""
 }

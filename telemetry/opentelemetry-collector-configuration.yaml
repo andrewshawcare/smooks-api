@@ -4,7 +4,28 @@ receivers:
       grpc:
 
 processors:
-  batch:
+  filter:
+    logs:
+      include:
+        match_type: regexp
+        bodies:
+          - ^{
+  transform:
+    log_statements:
+      - context: log
+        statements:
+          - merge_maps(attributes, ParseJSON(body), "upsert")
+  resource:
+    attributes:
+      - action: insert
+        key: loki.resource.labels
+        value: job
+  attributes:
+    actions:
+      - action: insert
+        key: loki.attribute.labels
+        value: event, duration, errorType, errorMessages, messageId
+  batch: {}
 
 exporters:
   otlp/tempo:
@@ -16,9 +37,6 @@ exporters:
     endpoint: http://loki:3100/loki/api/v1/push
     tls:
       insecure: true
-    labels:
-      resource:
-        job: job
 
 service:
   pipelines:
@@ -28,6 +46,6 @@ service:
       exporters: [otlp/tempo]
 
     logs:
-      receivers: [ otlp ]
-      processors: [ batch ]
-      exporters: [ loki ]
+      receivers: [otlp]
+      processors: [filter, transform, resource, attributes, batch]
+      exporters: [loki]
