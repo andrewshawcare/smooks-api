@@ -25,13 +25,13 @@
           "uid": "loki"
         },
         "enable": true,
-        "expr": "{job=\"app\"} | event=\"MessageMappingFailed\"",
+        "expr": "{job=\"app\", messageId=~\"$messageId\"} | event=\"MessageMappingFailed\" | json traceid=\"traceid\"",
         "iconColor": "red",
         "name": "MessageMappingFailed",
         "tagKeys": "MessageMappingFailed",
         "target": {},
         "textFormat": "{{errorMessages}}",
-        "titleFormat": "{{traceID}}"
+        "titleFormat": "{{traceid}}"
       }
     ]
   },
@@ -130,7 +130,7 @@
             "type": "loki",
             "uid": "loki"
           },
-          "expr": "sum(\n  count_over_time(\n    {job=\"app\"}\n    [${interval}]\n  )\n) by (event)",
+          "expr": "sum(\n  count_over_time(\n    {job=\"app\", messageId=~\"$messageId\"}\n    [${interval}]\n  )\n) by (event)",
           "legendFormat": "{{event}}",
           "queryType": "range",
           "refId": "A"
@@ -245,7 +245,7 @@
             "uid": "loki"
           },
           "editorMode": "code",
-          "expr": "sum(\n  count_over_time(\n    {job=\"app\", event=\"MessageMappingFailed\"}\n    [${interval}]\n  )\n)\n/\nsum(\n  count_over_time(\n    {job=\"app\", event=~\"MessageMapping(Succeeded|Failed)\"}\n    [${interval}]\n  )\n)",
+          "expr": "sum(\n  count_over_time(\n    {job=\"app\", messageId=~\"$messageId\", event=\"MessageMappingFailed\"}\n    [${interval}]\n  )\n)\n/\nsum(\n  count_over_time(\n    {job=\"app\", messageId=~\"$messageId\", event=~\"MessageMapping(Succeeded|Failed)\"}\n    [${interval}]\n  )\n)",
           "hide": false,
           "legendFormat": "MessageMappingFailed",
           "queryType": "range",
@@ -338,7 +338,7 @@
             "type": "loki",
             "uid": "loki"
           },
-          "expr": "avg_over_time({job=\"app\"} | unwrap duration [1m]) by (event)",
+          "expr": "avg_over_time({job=\"app\", messageId=~\"$messageId\"} | unwrap duration [1m]) by (event)",
           "legendFormat": "{{event}}",
           "refId": "A"
         }
@@ -429,7 +429,7 @@
             "uid": "loki"
           },
           "editorMode": "code",
-          "expr": "sum(\n  count_over_time(\n    {job=\"app\", errorType!=\"\"}\n    [${interval}]\n  )\n) by (errorType)",
+          "expr": "sum(\n  count_over_time(\n    {job=\"app\", messageId=~\"$messageId\", errorType!=\"\"}\n    [${interval}]\n  )\n) by (errorType)",
           "legendFormat": "{{errorType}}",
           "queryType": "range",
           "refId": "A"
